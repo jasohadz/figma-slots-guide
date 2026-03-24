@@ -27,6 +27,34 @@
   --font-body: 'Libre Franklin', -apple-system, sans-serif;
 }
 
+html.light {
+  --bg: #F5F3EE;
+  --bg-card: #FDFCF9;
+  --bg-elevated: #EDE9E2;
+  --border: rgba(0,0,0,0.09);
+  --border-hover: rgba(0,0,0,0.18);
+  --text: #1A1812;
+  --text-muted: #7A7468;
+  --text-dim: #C4BFB4;
+  --gold: #B5721E;
+  --gold-light: #C8883A;
+}
+
+html.light body::before {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+}
+
+html.light .topbar {
+  background: rgba(245,243,238,0.88);
+}
+
+html.light .cell-select option {
+  background: #FDFCF9;
+  color: var(--text);
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -970,6 +998,29 @@ table.audit tbody tr:hover td { background: rgba(255,255,255,0.018); }
 
 .footer-text a:hover { color: var(--gold); }
 
+/* ─── THEME TOGGLE ─── */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  margin-left: 8px;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
 /* ─── ANIMATIONS ─── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
@@ -1002,18 +1053,21 @@ table.audit tbody tr:hover td { background: rgba(255,255,255,0.018); }
 <!-- TOPBAR -->
 <nav class="topbar">
   <div class="topbar-brand">Figma Library — <span>Slots Field Guide</span></div>
-  <div class="phase-nav">
-    <a href="#section-discovery" class="phase-btn">01 · Discovery</a>
-    <a href="#section-decisions" class="phase-btn">02 · Decisions</a>
-    <a href="#section-implementation" class="phase-btn">03 · Implementation</a>
-    <a href="#section-audit" class="phase-btn accent">Audit Sheet</a>
+  <div style="display:flex;align-items:center;">
+    <div class="phase-nav">
+      <a href="#section-discovery" class="phase-btn">01 · Discovery</a>
+      <a href="#section-decisions" class="phase-btn">02 · Decisions</a>
+      <a href="#section-implementation" class="phase-btn">03 · Implementation</a>
+      <a href="#section-audit" class="phase-btn accent">Audit Sheet</a>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">☀</button>
   </div>
 </nav>
 
 <!-- HERO -->
 <div class="wrap">
   <div class="hero">
-    <div class="hero-eyebrow">Figma Component Architecture · Nathan Curtis</div>
+    <div class="hero-eyebrow">Figma Component Architecture</div>
     <h1 class="hero-title">
       Implementing <em>Slots</em><br>in a Figma Library
     </h1>
@@ -1963,6 +2017,24 @@ const observer = new IntersectionObserver((entries) => {
 sections.forEach(id => {
   const el = document.getElementById(id);
   if (el) observer.observe(el);
+});
+
+// ─── THEME TOGGLE ───
+const toggleBtn = document.getElementById('theme-toggle');
+
+function applyTheme(light) {
+  document.documentElement.classList.toggle('light', light);
+  toggleBtn.textContent = light ? '☾' : '☀';
+  toggleBtn.title = light ? 'Switch to dark mode' : 'Switch to light mode';
+}
+
+const savedTheme = localStorage.getItem('theme');
+applyTheme(savedTheme === 'light');
+
+toggleBtn.addEventListener('click', () => {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  applyTheme(isLight);
 });
 </script>
 </body>
